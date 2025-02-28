@@ -12,7 +12,7 @@ export type Task = {
 }
 
 export type GetTasksResponse = {
-  Items: Task
+  items: Task[]
   totalCount: number
   error: string | null
 }
