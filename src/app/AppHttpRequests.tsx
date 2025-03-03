@@ -17,7 +17,7 @@ export const AppHttpRequests = () => {
       setTodolists(todolists)
       todolists.forEach((todolist) => {
         tasksApi.getTasks(todolist.id).then((res) => {
-          setTasks({ ...tasks, [todolist.id]: res.data.items })
+          setTasks((prevState) => ({ ...prevState, [todolist.id]: res.data.items }))
         })
       })
     })
@@ -27,11 +27,14 @@ export const AppHttpRequests = () => {
     todolistsApi.createTodolist(title).then((res) => {
       const newTodolist = res.data.data.item
       setTodolists([newTodolist, ...todolists])
+      setTasks({ ...tasks, [newTodolist.id]: [] })
     })
   }
 
   const deleteTodolist = (id: string) => {
     todolistsApi.deleteTodolist(id).then(() => setTodolists(todolists.filter((todolist) => todolist.id !== id)))
+    delete tasks[id]
+    setTasks({ ...tasks })
   }
 
   const changeTodolistTitle = (id: string, title: string) => {
@@ -44,12 +47,17 @@ export const AppHttpRequests = () => {
     tasksApi.createTask(todolistId, title).then((res) => {
       const newTask = res.data.data.item
       setTasks({ ...tasks, [todolistId]: [newTask, ...tasks[todolistId]] })
+      // setTasks((prevState) => ({ ...prevState, [todolistId]: [newTask, ...prevState[todolistId]] }))
     })
   }
 
   const deleteTask = (todolistId: string, taskId: string) => {
     tasksApi.deleteTask(todolistId, taskId).then(() => {
       setTasks({ ...tasks, [todolistId]: tasks[todolistId].filter((task) => task.id !== taskId) })
+      // setTasks((prevState) => ({
+      //   ...prevState,
+      //   [todolistId]: prevState[todolistId].filter((task) => task.id !== taskId),
+      // }))
     })
   }
 
@@ -69,6 +77,10 @@ export const AppHttpRequests = () => {
       const updatedTask = res.data.data.item
 
       setTasks({ ...tasks, [todolistId]: tasks[todolistId].map((t) => (t.id === task.id ? updatedTask : t)) })
+      // setTasks((prevState) => ({
+      //   ...prevState,
+      //   [todolistId]: prevState[todolistId].map((t) => (t.id === task.id ? updatedTask : t)),
+      // }))
     })
   }
 
@@ -88,6 +100,10 @@ export const AppHttpRequests = () => {
       const updatedTask = res.data.data.item
 
       setTasks({ ...tasks, [todolistId]: tasks[todolistId].map((t) => (t.id === task.id ? updatedTask : t)) })
+      // setTasks((prevState) => ({
+      //   ...prevState,
+      //   [todolistId]: prevState[todolistId].map((t) => (t.id === task.id ? updatedTask : t)),
+      // }))
     })
   }
 
